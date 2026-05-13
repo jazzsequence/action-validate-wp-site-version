@@ -1,0 +1,35 @@
+name: Validate WordPress Site Version
+description: Checks the installed WordPress version on a Pantheon site and optionally updates it to the latest if it's out-of-date.
+author: jazzsequence
+branding:
+  icon: zap
+  color: blue
+inputs:
+  machine-token:
+    description: Pantheon Machine token with access to make updates to the site.
+    required: true
+  pantheon-site:
+    description: The site slug or UUID for the Pantheon site to validate.
+    required: true
+  apply-upstream-updates:
+    description: Whether to apply updates or simply report that the installed WordPress version is out-of-date.
+    required: false
+    default: false
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v6
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.4
+    - name: Install Terminus
+      uses: pantheon-systems/terminus-github-actions@v1
+      with:
+        pantheon-machine-token: ${{ inputs.machine-token }}
+    - name: Validate WordPress version
+      shell: bash
+      env:
+        APPLY_UPSTREAM_UPDATES: ${{ inputs.apply-upstream-updates }}
+        PANTHEON_SITE: ${{ inputs.pantheon-site }}
+      run: bash ${{ github.action_path }}/bin/validate-wp-site-version.sh

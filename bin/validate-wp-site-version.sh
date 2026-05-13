@@ -31,7 +31,7 @@ main() {
             echo "Applying upstream updates..."
             terminus upstream:updates:apply
         else
-            echo "Apply upstream updates not requested. Installed WordPress version is out of date. You should update WordPress. Exiting."
+            echo "❌ Apply upstream updates not requested. Installed WordPress version is out of date. You should update WordPress. Exiting."
             exit 1
         fi
     fi

@@ -37,6 +37,10 @@ jobs:
         uses: pantheon-systems/terminus-github-actions@v1
         with:
           pantheon-machine-token: ${{ secrets.TERMINUS_TOKEN }}
+      - name: Configure SSH key
+        uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}      
       - name: Prepare multidev
         run: |
           terminus multidev:delete ${{ env.SITE }}.${{ env.MULTIDEV }} --delete-branch -y 2>/dev/null || true

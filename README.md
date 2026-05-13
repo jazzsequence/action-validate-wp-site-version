@@ -1,5 +1,9 @@
 # Validate WordPress Site Version
 
+[![GitHub License](https://img.shields.io/github/license/jazzsequence/action-validate-plugin-version)](https://github.com/jazzsequence/action-validate-wp-site-version/blob/main/LICENSE)
+[![Validate WP Site Version Test](https://github.com/jazzsequence/action-validate-wp-site-version/actions/workflows/test.yml/badge.svg)](https://github.com/jazzsequence/action-validate-wp-site-version/actions/workflows/test.yml)
+
+
 Checks the installed WordPress version on a Pantheon site and optionally updates it to the latest if it's out-of-date.
 
 ## Usage

@@ -12,7 +12,7 @@ Checks the installed WordPress version on a Pantheon site and optionally updates
 name: Validate WordPress Site Version
 on:
   schedule:
-    - cron: '0 0 0 * * 0'
+    - cron: '0 0 * * 0'
 jobs:
   validate-wp:
   runs-on: ubuntu-latest

@@ -26,6 +26,7 @@ jobs:
         machine-token: ${{ secrets.TERMINUS_TOKEN }}
         pantheon-site: my-pantheon-site
         apply-upstream-updates: true
+        ssh-key: ${{ secrets.SSH_KEY }}
 ```
 
 ## Configuration

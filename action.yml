@@ -15,6 +15,10 @@ inputs:
     description: Whether to apply updates or simply report that the installed WordPress version is out-of-date.
     required: false
     default: false
+  environment:
+    description: The Pantheon environment to validate (dev, test, or a multidev name).
+    required: false
+    default: dev
 runs:
   using: composite
   steps:
@@ -32,4 +36,5 @@ runs:
       env:
         APPLY_UPSTREAM_UPDATES: ${{ inputs.apply-upstream-updates }}
         PANTHEON_SITE: ${{ inputs.pantheon-site }}
+        PANTHEON_ENV: ${{ inputs.environment }}
       run: bash ${{ github.action_path }}/bin/validate-wp-site-version.sh

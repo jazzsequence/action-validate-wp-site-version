@@ -45,7 +45,17 @@ runs:
           echo "HostKeyAlgorithms +ssh-rsa"
         } >> "$HOME/.ssh/config"
         echo -e "✅ SSH host keys configured."
+    - name: Check if Terminus is installed
+      id: terminus-check
+      shell: bash
+      run: |
+        if command -v terminus &>/dev/null; then
+          echo "installed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "installed=false" >> "$GITHUB_OUTPUT"
+        fi
     - name: Install Terminus
+      if: steps.terminus-check.outputs.installed == 'false'
       uses: pantheon-systems/terminus-github-actions@v1
       with:
         pantheon-machine-token: ${{ inputs.machine-token }}

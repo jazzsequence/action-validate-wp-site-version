@@ -18,6 +18,7 @@ jobs:
           machine-token: ${{ secrets.TERMINUS_TOKEN }}
           pantheon-site: cxr-fixture-validate-wp-site-version
           apply-upstream-updates: true
+          ssh-key: ${{ secrets.SSH_KEY }}
 
   test-outdated-version:
     name: Test - Outdated Version (Expected Failure)
@@ -51,6 +52,7 @@ jobs:
           pantheon-site: ${{ env.SITE }}
           environment: ${{ env.MULTIDEV }}
           apply-upstream-updates: false
+          ssh-key: ${{ secrets.SSH_KEY }}
         continue-on-error: true
       - name: Assert action reported outdated version
         run: |

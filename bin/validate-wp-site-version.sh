@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefial
+set -euo pipefail
 IFS=$'\n\t'
 
 main() {
@@ -8,6 +8,9 @@ main() {
     local CURRENT_WP_VERSION
     local INSTALLED_WP_VERSION
     local VERSION_COMPARE
+    local SITE_ENV
+    
+    SITE_ENV="${PANTHEON_ENV:-dev}"
     
     CURRENT_WP_VERSION=$(curl -s https://api.wordpress.org/core/version-check/1.7/ | jq -r '.offers[0].current')
     echo "Current WordPress Version: ${CURRENT_WP_VERSION}"
@@ -17,8 +20,8 @@ main() {
         exit 1
     fi
     
-    INSTALLED_WP_VERSION=$(terminus wp "${PANTHEON_SITE}.dev" -- core version)
-    echo "Installed WordPress Version on ${PANTHEON_SITE}: ${INSTALLED_WP_VERSION}"
+    INSTALLED_WP_VERSION=$(terminus wp "${PANTHEON_SITE}.${SITE_ENV}" -- core version)
+    echo "Installed WordPress Version on ${PANTHEON_SITE}.${SITE_ENV}: ${INSTALLED_WP_VERSION}"
     
     VERSION_COMPARE=$(php -r "echo version_compare('${INSTALLED_WP_VERSION}', '${CURRENT_WP_VERSION}');")
     if [[ "${VERSION_COMPARE}" == "-1" ]]; then

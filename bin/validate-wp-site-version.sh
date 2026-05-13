@@ -35,6 +35,10 @@ main() {
             exit 1
         fi
     fi
+    
+    # Update the installed version to confirm it matches.
+    INSTALLED_WP_VERSION=$(terminus wp "${PANTHEON_SITE}.${SITE_ENV}" -- core version)
+    echo "✅ ${PANTHEON_SITE}.${SITE_ENV} is running WordPress version ${INSTALLED_WP_VERSION}."
 }
 
 main

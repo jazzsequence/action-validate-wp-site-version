@@ -1,0 +1,62 @@
+name: Test
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test-apply-updates:
+    name: Test - Apply Upstream Updates (Success)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Validate WordPress version with upstream updates
+        uses: ./
+        with:
+          machine-token: ${{ secrets.TERMINUS_TOKEN }}
+          pantheon-site: cxr-fixture-validate-wp-site-version
+          apply-upstream-updates: true
+
+  test-outdated-version:
+    name: Test - Outdated Version (Expected Failure)
+    runs-on: ubuntu-latest
+    env:
+      SITE: cxr-fixture-validate-wp-site-version
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set multidev name
+        run: echo "MULTIDEV=ci-$(date +%s | cut -c3-)" >> "$GITHUB_ENV"
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+      - name: Install Terminus
+        uses: pantheon-systems/terminus-github-actions@v1
+        with:
+          pantheon-machine-token: ${{ secrets.TERMINUS_TOKEN }}
+      - name: Prepare multidev
+        run: |
+          terminus multidev:delete ${{ env.SITE }}.${{ env.MULTIDEV }} --delete-branch -y 2>/dev/null || true
+          terminus multidev:create ${{ env.SITE }}.dev ${{ env.MULTIDEV }}
+          terminus connection:set ${{ env.SITE }}.${{ env.MULTIDEV }} sftp
+          terminus wp ${{ env.SITE }}.${{ env.MULTIDEV }} -- core download --version=6.6.0 --force
+          terminus env:commit ${{ env.SITE }}.${{ env.MULTIDEV }} --message "Downgrade to WP 6.6.0"
+      - name: Run action without upstream updates (expected to fail)
+        id: validate
+        uses: ./
+        with:
+          machine-token: ${{ secrets.TERMINUS_TOKEN }}
+          pantheon-site: ${{ env.SITE }}
+          environment: ${{ env.MULTIDEV }}
+          apply-upstream-updates: false
+        continue-on-error: true
+      - name: Assert action reported outdated version
+        run: |
+          if [[ "${{ steps.validate.outcome }}" != "failure" ]]; then
+            echo "::error::Expected action to fail for outdated WordPress version, but it succeeded."
+            exit 1
+          fi
+          echo "Action correctly reported outdated WordPress version."
+      - name: Delete multidev
+        if: always()
+        run: terminus multidev:delete ${{ env.SITE }}.${{ env.MULTIDEV }} --delete-branch -y

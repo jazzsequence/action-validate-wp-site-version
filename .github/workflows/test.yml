@@ -43,6 +43,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_KEY }}      
       - name: Prepare multidev
         run: |
+          # Prepare multidev environment
           terminus multidev:create ${{ env.SITE }}.dev ${{ env.MULTIDEV }}
           terminus connection:set ${{ env.SITE }}.${{ env.MULTIDEV }} sftp
           terminus wp ${{ env.SITE }}.${{ env.MULTIDEV }} -- core download --version=6.6.0 --force

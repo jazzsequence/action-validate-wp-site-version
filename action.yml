@@ -11,6 +11,9 @@ inputs:
   pantheon-site:
     description: The site slug or UUID for the Pantheon site to validate.
     required: true
+  ssh-key:
+    description: A SSH key for a user with access to the site. Required for WP-CLI commands via Terminus.
+    required: true
   apply-upstream-updates:
     description: Whether to apply updates or simply report that the installed WordPress version is out-of-date.
     required: false
@@ -27,6 +30,21 @@ runs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: 8.4
+    - name: Configure SSH key
+      uses: webfactory/ssh-agent@v0.10.0
+      with:
+        ssh-private-key: ${{ inputs.ssh-key }}
+    - name: Set up host keys for Pantheon
+      shell: bash
+      run: |
+        # Set up host keys for Pantheon
+        echo -e "Adding *.pantheon.io *.drush.in *.getpantheon.com and *.panth.io to known hosts and configuring SSH..."
+        {
+          echo "Host *.pantheon.io *.drush.in *.getpantheon.com *.panth.io"
+          echo "StrictHostKeyChecking no"
+          echo "HostKeyAlgorithms +ssh-rsa"
+        } >> "$HOME/.ssh/config"
+        echo -e "✅ SSH host keys configured."
     - name: Install Terminus
       uses: pantheon-systems/terminus-github-actions@v1
       with:

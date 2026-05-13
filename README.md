@@ -42,6 +42,11 @@ A Pantheon machine token with access to make changes to the site being tested.
 
 The Pantheon site slug (e.g. `my-pantheon-site`) or UUID to pass to Terminus to access the site.
 
+#### `ssh-key`
+**Required**
+
+A SSH key for a user with access to the site. Required for WP-CLI commands via Terminus.
+
 #### `environment`
 _Optional_
 
